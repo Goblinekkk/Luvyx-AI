@@ -1,6 +1,6 @@
 let currentModel = "llama-3.3-70b-versatile";
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
-const MASTER_KEY = "VLOZ_SEM_SVUJ_GROQ_KLIC"; 
+const MASTER_KEY = "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"; 
 
 // Logika přepínání tlačítek
 document.querySelectorAll('.model-btn').forEach(btn => {
