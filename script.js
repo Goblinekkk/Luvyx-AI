@@ -1,6 +1,6 @@
 let currentModel = "llama-3.3-70b-versatile";
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
-const MASTER_KEY = "TVŮJ_KLÍČ_ZDE"; // Vlož svůj Groq klíč
+const MASTER_KEY = "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"; // Vlož svůj Groq klíč
 
 // Přepínání modelů
 document.querySelectorAll('.model-btn').forEach(btn => {
