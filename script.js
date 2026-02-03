@@ -1,15 +1,26 @@
 const MASTER_KEY = "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"; 
 let currentModel = "llama-3.3-70b-versatile";
 let currentLang = "cs";
-let messages = [];
 
-// Sidebar Toggle
+// Sidebar & Overlay
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('overlay');
 document.getElementById('menuBtn').onclick = () => { sidebar.classList.add('open'); overlay.style.display = 'block'; };
 overlay.onclick = () => { sidebar.classList.remove('open'); overlay.style.display = 'none'; };
 
-// Modely
+// Lang Switch
+document.getElementById('langCS').onclick = () => switchLang('cs');
+document.getElementById('langEN').onclick = () => switchLang('en');
+
+function switchLang(l) {
+    currentLang = l;
+    document.getElementById('langCS').classList.toggle('active', l === 'cs');
+    document.getElementById('langEN').classList.toggle('active', l === 'en');
+    document.getElementById('mainTitle').innerText = l === 'cs' ? "Co dnes vytvoříme?" : "What shall we create?";
+    document.getElementById('userInput').placeholder = l === 'cs' ? "Napiš zprávu..." : "Type a message...";
+}
+
+// Model Picker
 document.querySelectorAll('.model-btn').forEach(btn => {
     btn.onclick = () => {
         document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
@@ -18,34 +29,34 @@ document.querySelectorAll('.model-btn').forEach(btn => {
     };
 });
 
-// Odesílání
+// Chat Logic
 async function sendMessage() {
     const input = document.getElementById('userInput');
     const text = input.value.trim();
     if (!text) return;
 
-    // Skrýt úvod při první zprávě
     document.getElementById('welcomeScreen').style.display = 'none';
-    
-    // UI - Moje zpráva
     addBubble(text, 'user');
     input.value = "";
     
-    const aiBubble = addBubble("...", 'ai');
+    const aiBubble = addBubble(currentLang === 'cs' ? "Nexus přemýšlí..." : "Nexus thinking...", 'ai');
     
     try {
         const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
             method: "POST",
             headers: { "Authorization": `Bearer ${MASTER_KEY}`, "Content-Type": "application/json" },
             body: JSON.stringify({
-                messages: [{role: "system", content: currentLang === 'cs' ? "Mluv česky." : "Speak English."}, {role: "user", content: text}],
+                messages: [
+                    {role: "system", content: currentLang === 'cs' ? "Jsi Nexus AI. Mluv česky, stručně." : "You are Nexus AI. Speak English, concisely."},
+                    {role: "user", content: text}
+                ],
                 model: currentModel
             })
         });
         const data = await res.json();
         aiBubble.innerText = data.choices[0].message.content;
-        saveChat(text);
-    } catch (e) { aiBubble.innerText = "Chyba spojení."; }
+        updateHistory(text);
+    } catch (e) { aiBubble.innerText = "Error API."; }
 }
 
 function addBubble(text, type) {
@@ -58,19 +69,20 @@ function addBubble(text, type) {
     return div;
 }
 
-function saveChat(title) {
-    let history = JSON.parse(localStorage.getItem('nexus_history') || '[]');
+function updateHistory(text) {
+    let history = JSON.parse(localStorage.getItem('nexus_hist') || '[]');
+    const title = text.substring(0, 25) + "...";
     if (!history.includes(title)) {
-        history.unshift(title.substring(0, 30));
-        localStorage.setItem('nexus_history', JSON.stringify(history.slice(0, 10)));
+        history.unshift(title);
+        localStorage.setItem('nexus_hist', JSON.stringify(history.slice(0, 8)));
         renderHistory();
     }
 }
 
 function renderHistory() {
     const list = document.getElementById('chatHistoryList');
-    const history = JSON.parse(localStorage.getItem('nexus_history') || '[]');
-    list.innerHTML = history.map(h => `<div style="padding:10px; border-bottom:1px solid #eee; font-size:0.9rem; cursor:pointer;">${h}</div>`).join('');
+    const history = JSON.parse(localStorage.getItem('nexus_hist') || '[]');
+    list.innerHTML = history.map(h => `<div style="padding:12px; border-bottom:1px solid #f4f4f5; font-size:0.85rem; cursor:pointer;">${h}</div>`).join('');
 }
 
 document.getElementById('sendBtn').onclick = sendMessage;
