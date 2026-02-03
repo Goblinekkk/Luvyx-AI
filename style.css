@@ -4,12 +4,18 @@ body { background: var(--bg); color: var(--text); overflow: hidden; height: 100v
 
 nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; position: fixed; top: 0; width: 100%; z-index: 50; background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); }
 .nav-right { display: flex; align-items: center; gap: 15px; }
-.icon-btn { background: none; border: none; cursor: pointer; }
+.icon-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; color: var(--text); }
 .lang-switch { font-size: 0.8rem; font-weight: 600; color: #a1a1aa; cursor: pointer; }
 .lang-switch .active { color: var(--text); }
 
-.sidebar { position: fixed; right: -300px; top: 0; width: 280px; height: 100%; background: white; z-index: 1000; transition: 0.4s ease; padding: 25px; border-left: 1px solid var(--border); }
+.sidebar { position: fixed; right: -320px; top: 0; width: 280px; height: 100%; background: white; z-index: 1000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 25px; border-left: 1px solid var(--border); display: flex; flex-direction: column; }
 .sidebar.open { right: 0; }
+#newChatBtn { width: 100%; padding: 12px; border: 1px solid var(--border); background: var(--secondary); cursor: pointer; margin-top: 15px; font-weight: 700; font-size: 0.85rem; }
+.sidebar-footer { margin-top: auto; border-top: 1px solid var(--border); text-align: center; padding-top: 10px; }
+
+#chatHistoryList { flex: 1; overflow-y: auto; margin-top: 20px; }
+.hist-item { padding: 12px 10px; border-bottom: 1px solid #f4f4f5; font-size: 0.85rem; color: #555; }
+
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.1); display: none; z-index: 900; backdrop-filter: blur(2px); }
 
 .chat-container { height: 100vh; padding: 100px 20px 120px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
@@ -28,4 +34,3 @@ nav { display: flex; justify-content: space-between; align-items: center; paddin
 textarea { flex: 1; border: none; background: transparent; outline: none; padding: 8px; font-size: 1rem; resize: none; height: 40px; }
 
 #sendBtn { background: #000; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-#sendBtn svg { transform: translateX(-1px); }
